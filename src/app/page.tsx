@@ -1,11 +1,12 @@
-import { Calendar } from "@/components/Calendar/Calendar";
-import { MoodForm } from "@/components/MoodForm/MoodForm";
+import { JoyMessage } from "@/components/Main/JoyMessage";
+import { TrendCircle } from "@/components/Main/TrendCircle";
+
 
 export default function HomePage() {
   return (
-    <main className="container mx-auto p-4">
-      <Calendar />
-      <MoodForm />
+    <main className="min-h-screen bg-white flex flex-col items-center justify-start">
+      <TrendCircle />
+      <JoyMessage />
     </main>
   );
 }
