@@ -1,43 +1,56 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 
 const trends = [
-    "rizz", "skibidi", "sigma grindset", "corecore", "NPC livestream",
-    "based", "slay", "🧠💥", "💀", "gyatt", "silent rizz", "goofy ahh"
+  "rizz", "skibidi", "sigma grindset", "corecore", "NPC livestream",
+  "based", "slay", "🧠💥", "💀", "gyatt", "silent rizz", "goofy ahh",
+  "rizz", "skibidi", "sigma grindset", "corecore", "NPC livestream",
+  "based", "slay", "🧠💥", "💀", "gyatt", "silent rizz", "goofy ahh",
 ];
 
 export const TrendCircle = () => {
-    const [rotating, setRotating] = useState(0);
+  const [scrollX, setScrollX] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setRotating((prev) => prev + 0.5);
-        }, 30);
-        return () => clearInterval(interval);
-    }, []);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (containerRef.current) {
+        containerRef.current.scrollLeft += 1;
+        setScrollX(containerRef.current.scrollLeft);
+        if (containerRef.current.scrollLeft > containerRef.current.scrollWidth - containerRef.current.clientWidth) {
+          containerRef.current.scrollLeft = 0;
+        }
+      }
+    }, 50);
+    return () => clearInterval(interval);
+  }, []);
 
-    return (
-        <div className="relative h-[300px] w-full flex items-center justify-center overflow-hidden">
-            <div className=" animate-spin-slow">
-                {trends.map((trend, i) => {
-                    const angle = (360 / trends.length) * i + rotating;
-                    const x = 120 * Math.cos((angle * Math.PI) / 180);
-                    const y = 120 * Math.sin((angle * Math.PI) / 180);
-
-                    return (
-                        <motion.div
-                            key={trend}
-                            className="absolute text-sm sm:text-md text-gray-500 animate-pulse"
-                            style={{
-                                transform: `translate(${x}px, ${y}px)`
-                            }}
-                        >
-                            {trend}
-                        </motion.div>
-                    );
-                })}
-            </div>
-        </div>
-    );
+  return (
+    <div className="w-full overflow-hidden mb-6"> 
+      <div
+        ref={containerRef}
+        className="flex space-x-6 px-6 py-3 overflow-x-auto rounded-full items-center" 
+        style={{
+          background: 'rgba(255, 255, 255, 0.25)', 
+          backdropFilter: 'blur(10px)',
+          WebkitOverflowScrolling: 'touch',
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+        }}
+      >
+        {trends.map((trend, index) => (
+          <motion.span
+            key={index}
+            className="text-sm sm:text-md text-[#52525B] whitespace-nowrap font-medium" 
+            whileHover={{ scale: 1.1 }}
+          >
+            {trend}
+          </motion.span>
+        ))}
+        
+        <span className="text-yellow-300 ml-2">*</span>
+      </div>
+    </div>
+  );
 };

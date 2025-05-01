@@ -1,18 +1,18 @@
 export const JoyMessage = () => {
-    return (
-      <section className="text-center px-4 py-16 sm:py-24 max-w-2xl mx-auto bg-gradient-to-b from-white via-slate-50 to-white rounded-2xl shadow-md">
-        <h2 className="text-3xl sm:text-5xl font-bold mb-6 text-slate-800">
-          Радість — це основа життя
-        </h2>
-        <p className="text-lg sm:text-xl text-gray-700 leading-relaxed">
-          Наш емоційний стан формує наше сприйняття світу. Радість — це не просто миттєве почуття, а
-          фундамент для здорових стосунків, мотивації та внутрішнього балансу.
-          <br /><br />
-          <span className="font-semibold">
-            Зберігай моменти радості. Ділись ними. І нехай MoodChain допоможе тобі це зробити ❤️
-          </span>
-        </p>
-      </section>
-    );
-  };
-  
+  return (
+    <section className="text-center px-8 py-14 sm:py-20 max-w-lg mx-auto bg-[#FEF7ED] rounded-3xl shadow-lg"> 
+      <h2 className="text-3xl sm:text-5xl font-bold mb-5 text-[#374151]"> 
+        Joy is the foundation of life
+      </h2>
+      <p className="text-lg sm:text-xl text-[#4B5563] leading-relaxed"> 
+        Our emotional state shapes our perception of the world. Joy is not just a fleeting feeling, but the
+        foundation for healthy relationships, motivation, and inner balance.
+        <br /><br />
+        <span className="font-semibold text-[#374151]">
+          Save moments of joy. Share them. And let MoodChain help you do it ❤️
+        </span>
+      </p>
+      
+    </section>
+  );
+};
