@@ -6,4 +6,5 @@ export interface MoodEntry {
   mood: MoodType;        
   description?: string;  
   nftMinted?: boolean;   
+  image?: string;
 }
