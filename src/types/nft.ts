@@ -8,5 +8,5 @@ export interface NFTMetadata {
       date: string;
       streak?: number;
     }[];
-  }
+}
   
