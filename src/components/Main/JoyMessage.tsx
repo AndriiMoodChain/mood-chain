@@ -1,18 +1,41 @@
+"use client";
+import styles from "./JoyMessage.module.css";
+import { motion } from "framer-motion";
+
 export const JoyMessage = () => {
   return (
-    <section className="text-center px-8 py-14 sm:py-20 max-w-lg mx-auto bg-[#FEF7ED] rounded-3xl shadow-lg"> 
-      <h2 className="text-3xl sm:text-5xl font-bold mb-5 text-[#374151]"> 
-        Joy is the foundation of life
-      </h2>
-      <p className="text-lg sm:text-xl text-[#4B5563] leading-relaxed"> 
-        Our emotional state shapes our perception of the world. Joy is not just a fleeting feeling, but the
-        foundation for healthy relationships, motivation, and inner balance.
-        <br /><br />
-        <span className="font-semibold text-[#374151]">
-          Save moments of joy. Share them. And let MoodChain help you do it ❤️
-        </span>
+    <motion.section
+      className={styles.section}
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+    >
+      <h2 className={styles.heading}>MoodChain — Your Emotions on the Blockchain</h2>
+
+      <p className={styles.paragraph}>
+        <strong>What if your feelings had a memory?</strong><br />
+        MoodChain is a personal emotional diary powered by blockchain — where each mood you log becomes a unique NFT.
       </p>
-      
-    </section>
+
+      <p className={styles.paragraph}>
+        <strong>Why it matters:</strong><br />
+        Most mental health apps feel cold and clinical. MoodChain is different — it's built for self-reflection, connection, and celebration.
+      </p>
+
+      <p className={styles.paragraph}>
+        <strong>How it works:</strong><br />
+        Track your emotions daily. Earn NFT badges for emotional milestones. Visualize your mental wellness through mood calendars, analytics, and smart AI suggestions.
+      </p>
+
+      <p className={styles.paragraph}>
+        <strong>Powered by Web3:</strong><br />
+        Your mood entries live on-chain — private, tamper-proof, and ready for a future where your emotional journey matters.
+      </p>
+
+      <p className={styles.finalNote}>
+        MoodChain helps you understand yourself, grow emotionally, and share your story — one feeling at a time. ❤️
+      </p>
+    </motion.section>
   );
 };

@@ -1,0 +1,38 @@
+.section {
+    width: 100%;
+    padding: 4rem 2rem;
+    background: transparent;
+    color: #1F2937;
+  }
+  
+  .heading {
+    font-size: 2.75rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #111827;
+  }
+  
+  .paragraph {
+    font-size: 1.15rem;
+    line-height: 1.75;
+    margin-bottom: 1.5rem;
+    max-width: 60rem;
+    margin-left: auto;
+    margin-right: auto;
+    color: #374151;
+  }
+  
+  .paragraph strong {
+    color: #111827;
+    font-weight: 600;
+  }
+  
+  .finalNote {
+    font-size: 1.25rem;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 3rem;
+    color: #111827;
+  }
+  

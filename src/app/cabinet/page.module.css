@@ -1,0 +1,184 @@
+.container {
+    padding: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+    color: #111;
+    font-family: "Segoe UI", sans-serif;
+  }
+  
+  .title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+  
+  .card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+  }
+  
+  .subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .label {
+    display: block;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+  
+  .select,
+  .textarea {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+  }
+  
+  .button {
+    background-color: #4f46e5;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .button:hover {
+    background-color: #4338ca;
+  }
+  
+  .moodCard {
+    padding: 1rem;
+    border-radius: 8px;
+    color: #111;
+    margin-bottom: 1rem;
+  }
+  
+  .moodTitle {
+    font-size: 1.25rem;
+    font-weight: bold;
+  }
+  
+  .moodDate {
+    font-size: 0.9rem;
+    opacity: 0.8;
+  }
+  
+  .moodDescription {
+    margin-top: 0.5rem;
+  }
+  
+  .nftTag {
+    display: inline-block;
+    background-color: #10b981;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+  }
+  
+  .analysisSection {
+    margin-top: 1.5rem;
+  }
+  
+  .analysisTitle {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  
+  .analysisText {
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .inputFile {
+    width: 100%;
+    font-size: 0.875rem; 
+    color: #4b5563; 
+  }
+  
+  .inputFile::-webkit-file-upload-button {
+    margin-right: 1rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    border-radius: 9999px;
+    border: none;
+    font-size: 0.875rem; 
+    font-weight: 600; 
+    background-color: #eff6ff; 
+    color: #2563eb; 
+    cursor: pointer;
+  }
+  
+  .inputFile::file-selector-button {
+    margin-right: 1rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    border-radius: 9999px;
+    border: none;
+    font-size: 0.875rem; 
+    font-weight: 600; 
+    background-color: #eff6ff; 
+    color: #2563eb; 
+    cursor: pointer;
+  }
+  
+  .inputFile::-webkit-file-upload-button:hover {
+    background-color: #dbeafe; 
+  }
+  
+  .inputFile::file-selector-button:hover {
+    background-color: #dbeafe; 
+  }
+  
+  .previewImage {
+    margin-top: 1rem; 
+    width: 8rem; 
+    height: 8rem; 
+    object-fit: cover; 
+    border-radius: 0.375rem; 
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.05); 
+  }
+  
+  .moodCardImage {
+    margin-top: 0.5rem; 
+    border-radius: 0.5rem; 
+    width: 100%; 
+    height: auto; 
+    max-height: 16rem; 
+    object-fit: cover; 
+  }
+
+
+  .moodHappy { background-color: #f59e0b; }
+  .moodSad { background-color: #60a5fa; }
+  .moodAngry { background-color: #ef4444; }
+  .moodAnxious { background-color: #a78bfa; }
+  .moodCalm { background-color: #34d399; }
+  .moodExcited { background-color: #f472b6; }
+  .moodTired { background-color: #9ca3af; }
+  .moodDefault { background-color: #d1d5db; }
+  

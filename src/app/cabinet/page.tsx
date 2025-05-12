@@ -2,15 +2,16 @@
 
 import { useState } from "react";
 import { MoodType, MoodEntry } from "@/types/mood";
-
+import styles from "./page.module.css";
 
 const dummyMoods: MoodEntry[] = [
   {
     id: "1",
     date: new Date().toISOString(),
     mood: "happy" as MoodType,
-    description: "Чудовий день!",
+    description: "Feeling light and joyful.",
     nftMinted: false,
+
   },
 ];
 
@@ -18,7 +19,7 @@ const initialSingleMood: MoodEntry = {
   id: "2",
   date: new Date().toISOString(),
   mood: "excited" as MoodType,
-  description: "Отримав NFT за настрій!",
+  description: "Got an NFT for my mood!",
   nftMinted: true,
 };
 
@@ -26,89 +27,123 @@ export default function CabinetPage() {
   const [mood, setMood] = useState<MoodType>("happy");
   const [description, setDescription] = useState("");
   const [moods, setMoods] = useState<MoodEntry[]>(dummyMoods);
-  const [singleMood, setSingleMood] = useState<MoodEntry>(initialSingleMood); 
+  const [singleMood, setSingleMood] = useState<MoodEntry>(initialSingleMood);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setImagePreview(null);
+    }
+  };
+
+
 
   const handleMoodSubmit = (newMood: MoodType, newDescription?: string) => {
-    console.log("Новий настрій:", newMood, newDescription);
-    
     const newEntry: MoodEntry = {
       id: Date.now().toString(),
       date: new Date().toISOString(),
       mood: newMood,
       description: newDescription,
-      nftMinted: false, 
+      nftMinted: false,
+      image: imagePreview || undefined,
     };
+
     setMoods([...moods, newEntry]);
-    setSingleMood(newEntry); 
+    setSingleMood(newEntry);
     setMood("happy");
     setDescription("");
+    setImagePreview(null);
   };
+
 
   const moodColors: { [key in MoodType]: string } = {
-    happy: 'bg-yellow-200 text-yellow-800',
-    sad: 'bg-blue-200 text-blue-800',
-    angry: 'bg-red-200 text-red-800',
-    anxious: 'bg-purple-200 text-purple-800',
-    calm: 'bg-green-200 text-green-800',
-    excited: 'bg-orange-200 text-orange-800',
-    tired: 'bg-gray-200 text-gray-800',
+    happy: styles.moodHappy,
+    sad: styles.moodSad,
+    angry: styles.moodAngry,
+    anxious: styles.moodAnxious,
+    calm: styles.moodCalm,
+    excited: styles.moodExcited,
+    tired: styles.moodTired,
   };
 
-  const moodColorClass = moodColors[singleMood.mood] || 'bg-gray-100 text-gray-700';
+  const moodColorClass = moodColors[singleMood.mood] || styles.moodDefault;
 
   return (
-    <main className="container mx-auto p-6 md:p-10">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Your Mood Diary</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                   
-          <div className="rounded-lg shadow-md p-6 bg-white mb-8">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">How are you feeling today?</h2>
-            <div className="mb-4">
-              <label htmlFor="mood" className="block text-gray-700 text-sm font-bold mb-2">Mood:</label>
-              <select
-                id="mood"
-                className="w-full p-3 border rounded-md shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-300"
-                value={mood}
-                onChange={(e) => setMood(e.target.value as MoodType)}
-              >
-                <option value="happy">😊 Happy</option>
-                <option value="sad">😢 Sad</option>
-                <option value="angry">😡 Angry</option>
-                <option value="anxious">😰 Anxious</option>
-                <option value="calm">😌 Calm</option>
-                <option value="excited">🤩 Excited</option>
-                <option value="tired">😴 Tired</option>
-              </select>
-            </div>
-            <div className="mb-4">
-              <label htmlFor="description" className="block text-gray-700 text-sm font-bold mb-2">Description (optional):</label>
-              <textarea
-                id="description"
-                className="w-full p-3 border rounded-md shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-300"
-                placeholder="Add a comment"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </div>
-            <button
-              onClick={() => handleMoodSubmit(mood, description)}
-              className="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-            >
-              Save Mood
-            </button>
+    <main className={styles.container}>
+      <h1 className={styles.title}>Your Mood Diary</h1>
+      <div className={styles.grid}>
+        <div className={styles.card}>
+          <h2 className={styles.subtitle}>How are you feeling today?</h2>
+          <label className={styles.label} htmlFor="mood">Mood:</label>
+          <select
+            id="mood"
+            className={styles.select}
+            value={mood}
+            onChange={(e) => setMood(e.target.value as MoodType)}
+          >
+            <option value="happy">😊 Happy</option>
+            <option value="sad">😢 Sad</option>
+            <option value="angry">😡 Angry</option>
+            <option value="anxious">😰 Anxious</option>
+            <option value="calm">😌 Calm</option>
+            <option value="excited">🤩 Excited</option>
+            <option value="tired">😴 Tired</option>
+          </select>
+
+          <label className={styles.label} htmlFor="description">Description (optional):</label>
+          <textarea
+            id="description"
+            className={styles.textarea}
+            placeholder="Add a comment"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="image">Upload Image (optional):</label>
+            <input
+              type="file"
+              accept="image/*"
+              id="image"
+              onChange={handleImageChange}
+              className={styles.inputFile}
+            />
+            {imagePreview && (
+              <img src={imagePreview} alt="Preview" className={styles.previewImage} />
+            )}
           </div>
 
-         
-          <div className="rounded-lg shadow-sm p-6 bg-white">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Recent Mood</h2>
-            <div className={`border rounded-lg shadow-sm p-4 mb-4 ${moodColorClass}`}>
-              <div className="text-lg font-semibold">{singleMood.mood.toUpperCase()}</div>
-              <div className="text-sm text-gray-600">{new Date(singleMood.date).toLocaleDateString()}</div>
-              {singleMood.description && <p className="mt-2 text-gray-700">{singleMood.description}</p>}
-              {singleMood.nftMinted && <span className="text-green-600 text-xs mt-2 block">NFT Minted ✅</span>}
-            </div>
+          <button className={styles.button} onClick={() => handleMoodSubmit(mood, description)}>
+            Save Mood
+          </button>
+        </div>
+
+        <div className={styles.card}>
+          <h2 className={styles.subtitle}>Recent Mood</h2>
+          <div className={`${styles.moodCard} ${moodColorClass}`}>
+            <div className={styles.moodTitle}>{singleMood.mood.toUpperCase()}</div>
+            <div className={styles.moodDate}>{new Date(singleMood.date).toLocaleDateString()}</div>
+            {singleMood.description && <p className={styles.moodDescription}>{singleMood.description}</p>}
+            {singleMood.nftMinted && <span className={styles.nftTag}>NFT Minted ✅</span>}
+            {singleMood.image && (
+              <img src={singleMood.image} alt="Mood" className={styles.moodCardImage} />
+            )}
+
           </div>
-        
+
+          <div className={styles.analysisSection}>
+            <h3 className={styles.analysisTitle}>Mood Analysis</h3>
+            <p className={styles.analysisText}>You seem to be feeling mostly positive this week. Keep up the good vibes! 🎉</p>
+            <p className={styles.analysisText}>Tip: Try journaling before bed to reflect and unwind.</p>
+          </div>
+        </div>
       </div>
     </main>
   );
