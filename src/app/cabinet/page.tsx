@@ -3,36 +3,23 @@
 import { useState } from "react";
 import { MoodType, MoodEntry } from "@/types/mood";
 import styles from "./page.module.css";
-
-const dummyMoods: MoodEntry[] = [
-  {
-    id: "1",
-    date: new Date().toISOString(),
-    mood: "happy" as MoodType,
-    description: "Feeling light and joyful.",
-    nftMinted: false,
-
-  },
-];
-
-const initialSingleMood: MoodEntry = {
-  id: "2",
-  date: new Date().toISOString(),
-  mood: "excited" as MoodType,
-  description: "Got an NFT for my mood!",
-  nftMinted: true,
-};
+import { useWallet } from "@solana/wallet-adapter-react";
+import { mintMoodNft } from "../scripts/mintMoodNFT";
 
 export default function CabinetPage() {
+  const wallet = useWallet();
   const [mood, setMood] = useState<MoodType>("happy");
   const [description, setDescription] = useState("");
-  const [moods, setMoods] = useState<MoodEntry[]>(dummyMoods);
-  const [singleMood, setSingleMood] = useState<MoodEntry>(initialSingleMood);
+  const [moods, setMoods] = useState<MoodEntry[]>([]);
+  const [singleMood, setSingleMood] = useState<MoodEntry | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setImageFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
@@ -40,28 +27,70 @@ export default function CabinetPage() {
       reader.readAsDataURL(file);
     } else {
       setImagePreview(null);
+      setImageFile(null);
     }
   };
 
+  const handleMoodSubmit = async (newMood: MoodType, newDescription?: string) => {
+    if (!wallet.connected || !wallet.publicKey || !imageFile) {
+      alert("Please connect wallet and select an image.");
+      return;
+    }
 
+    setIsLoading(true);
 
-  const handleMoodSubmit = (newMood: MoodType, newDescription?: string) => {
-    const newEntry: MoodEntry = {
-      id: Date.now().toString(),
-      date: new Date().toISOString(),
-      mood: newMood,
-      description: newDescription,
-      nftMinted: false,
-      image: imagePreview || undefined,
-    };
+    try {
+      
+      const formData = new FormData();
+      formData.append("file", imageFile);
+      formData.append("mood", newMood);
+      formData.append("description", newDescription || "");
+      formData.append("createdAt", new Date().toISOString());
 
-    setMoods([...moods, newEntry]);
-    setSingleMood(newEntry);
+      
+      const uploadResponse = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error("Upload failed");
+      }
+
+      const { metadataUri } = await uploadResponse.json();
+
+      
+      const nftAddress = await mintMoodNft(metadataUri, wallet, newMood);
+
+      
+      const newEntry: MoodEntry = {
+        id: nftAddress.toString(),
+        date: new Date().toISOString(),
+        mood: newMood,
+        description: newDescription,
+        nftMinted: true,
+        image: imagePreview || undefined,
+        nftAddress: nftAddress.toString(),
+      };
+
+      setMoods([...moods, newEntry]);
+      setSingleMood(newEntry);
+      resetForm();
+
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Operation failed. See console for details.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const resetForm = () => {
     setMood("happy");
     setDescription("");
     setImagePreview(null);
+    setImageFile(null);
   };
-
 
   const moodColors: { [key in MoodType]: string } = {
     happy: styles.moodHappy,
@@ -73,7 +102,7 @@ export default function CabinetPage() {
     tired: styles.moodTired,
   };
 
-  const moodColorClass = moodColors[singleMood.mood] || styles.moodDefault;
+  const moodColorClass = singleMood ? moodColors[singleMood.mood] || styles.moodDefault : styles.moodDefault;
 
   return (
     <main className={styles.container}>
@@ -106,8 +135,8 @@ export default function CabinetPage() {
             onChange={(e) => setDescription(e.target.value)}
           />
 
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="image">Upload Image (optional):</label>
+          <div className={styles.uploadBlock}>
+            <label htmlFor="image" className={styles.uploadLabel}>Upload Image (optional):</label>
             <input
               type="file"
               accept="image/*"
@@ -120,23 +149,28 @@ export default function CabinetPage() {
             )}
           </div>
 
-          <button className={styles.button} onClick={() => handleMoodSubmit(mood, description)}>
-            Save Mood
+          <button
+            className={styles.button}
+            onClick={() => handleMoodSubmit(mood, description)}
+            disabled={isLoading}
+          >
+            {isLoading ? "Minting..." : "Save Mood & Mint"}
           </button>
         </div>
 
         <div className={styles.card}>
           <h2 className={styles.subtitle}>Recent Mood</h2>
-          <div className={`${styles.moodCard} ${moodColorClass}`}>
-            <div className={styles.moodTitle}>{singleMood.mood.toUpperCase()}</div>
-            <div className={styles.moodDate}>{new Date(singleMood.date).toLocaleDateString()}</div>
-            {singleMood.description && <p className={styles.moodDescription}>{singleMood.description}</p>}
-            {singleMood.nftMinted && <span className={styles.nftTag}>NFT Minted ✅</span>}
-            {singleMood.image && (
-              <img src={singleMood.image} alt="Mood" className={styles.moodCardImage} />
-            )}
-
-          </div>
+          {singleMood ? (
+            <div className={`${styles.moodCard} ${moodColorClass}`}>
+              <div className={styles.moodTitle}>{singleMood.mood.toUpperCase()}</div>
+              <div className={styles.moodDate}>{new Date(singleMood.date).toLocaleDateString()}</div>
+              {singleMood.description && <p className={styles.moodDescription}>{singleMood.description}</p>}
+              {singleMood.nftMinted && <span className={styles.nftTag}>NFT Minted ✅</span>}
+              {singleMood.image && (
+                <img src={singleMood.image} alt="Mood" className={styles.moodCardImage} />
+              )}
+            </div>
+          ) : <p>No mood recorded yet.</p>}
 
           <div className={styles.analysisSection}>
             <h3 className={styles.analysisTitle}>Mood Analysis</h3>
