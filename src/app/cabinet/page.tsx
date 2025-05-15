@@ -40,51 +40,56 @@ export default function CabinetPage() {
     setIsLoading(true);
 
     try {
-      const buffer = await imageFile.arrayBuffer();
-      const imageBuffer = Buffer.from(buffer);
-      const createdAt = new Date().toISOString();
-
       
       const formData = new FormData();
-      formData.append("file", new Blob([imageBuffer], { type: imageFile.type }), imageFile.name);
+      formData.append("file", imageFile);
       formData.append("mood", newMood);
       formData.append("description", newDescription || "");
-      formData.append("createdAt", createdAt);
+      formData.append("createdAt", new Date().toISOString());
 
-      const res = await fetch("/api/upload", {
+      
+      const uploadResponse = await fetch("/api/upload", {
         method: "POST",
         body: formData,
       });
 
-      if (!res.ok) throw new Error("Metadata upload failed");
-      console.log(res)
-      const { metadataUri } = await res.json();
+      if (!uploadResponse.ok) {
+        throw new Error("Upload failed");
+      }
+
+      const { metadataUri } = await uploadResponse.json();
 
       
-      const nftAddress = await mintMoodNft(metadataUri,wallet);
+      const nftAddress = await mintMoodNft(metadataUri, wallet, newMood);
 
+      
       const newEntry: MoodEntry = {
-        id: Date.now().toString(),
-        date: createdAt,
+        id: nftAddress.toString(),
+        date: new Date().toISOString(),
         mood: newMood,
         description: newDescription,
         nftMinted: true,
         image: imagePreview || undefined,
-        nftAddress: nftAddress.toBase58(),
+        nftAddress: nftAddress.toString(),
       };
 
       setMoods([...moods, newEntry]);
       setSingleMood(newEntry);
-      setMood("happy");
-      setDescription("");
-      setImagePreview(null);
-      setImageFile(null);
-    } catch (e) {
-      console.error("Mint failed:", e);
-      alert("Minting failed. See console for details.");
+      resetForm();
+
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Operation failed. See console for details.");
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const resetForm = () => {
+    setMood("happy");
+    setDescription("");
+    setImagePreview(null);
+    setImageFile(null);
   };
 
   const moodColors: { [key in MoodType]: string } = {

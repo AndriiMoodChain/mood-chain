@@ -1,52 +1,84 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { v4 as uuidv4 } from 'uuid';
-import { create as ipfsHttpClient } from 'ipfs-http-client';
+import { NextResponse } from 'next/server';
+import pinataSDK from '@pinata/sdk';
+import { Readable } from 'stream';
+import { File as NodeFile } from 'node:buffer';
 
-const projectId = process.env.PINATA_PROJECT_ID;
-const projectSecret = process.env.PINATA_SECRET;
-const auth = 'Basic ' + Buffer.from(`${projectId}:${projectSecret}`).toString('base64');
+const pinata = new pinataSDK(
+  process.env.NEXT_PUBLIC_PINATA_API_KEY!,
+  process.env.NEXT_PUBLIC_PINATA_SECRET_API_KEY!
+);
 
-const client = ipfsHttpClient({
-  host: 'gateway.pinata.cloud',
-  port: 443,
-  protocol: 'https',
-  headers: {
-    Authorization: auth,
-  },
-});
+function bufferToStream(buffer: Buffer): Readable {
+  const stream = new Readable();
+  stream.push(buffer);
+  stream.push(null); 
+  return stream;
+}
 
-export async function POST(req:NextRequest) {
+export async function POST(request: Request) {
   try {
-    const formData = await req.formData();
-    const imageFile = formData.get('image');
-    const mood = formData.get('mood');
-    const description = formData.get('description');
+    const formData = await request.formData();
+    const imageFile = formData.get('file') as File;
+    const mood = formData.get('mood') as string;
+    const description = formData.get('description') as string;
+    const createdAt = formData.get('createdAt') as string;
 
-    if (!imageFile || typeof imageFile === 'string') {
-      return NextResponse.json({ error: 'Missing image' }, { status: 400 });
+    if (!imageFile || !mood) {
+      return NextResponse.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      );
     }
 
-    
-    const imageBuffer = Buffer.from(await imageFile.arrayBuffer());
-    const imageResult = await client.add(imageBuffer);
+    const arrayBuffer = await imageFile.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    const readableStream = bufferToStream(buffer);
+
+    const fileName = `mood-image-${Date.now()}.${imageFile.type.split('/')[1] || 'jpg'}`;
+
+    const imageResult = await pinata.pinFileToIPFS(readableStream, {
+      pinataMetadata: {
+        name: fileName,
+      },
+      pinataOptions: {
+        cidVersion: 1,
+      },
+    });
 
     const metadata = {
       name: `Mood NFT - ${mood}`,
-      description: description || `Mood captured as NFT: ${mood}`,
-      image: `https://gateway.pinata.cloud/ipfs/${imageResult.path}`,
+      description: description || `Captured mood: ${mood}`,
+      image: `ipfs://${imageResult.IpfsHash}`,
       attributes: [
         { trait_type: 'Mood', value: mood },
-        { trait_type: 'Timestamp', value: new Date().toISOString() },
+        { trait_type: 'Date', value: createdAt },
+        ...(description ? [{ trait_type: 'Note', value: description }] : []),
       ],
+      properties: {
+        files: [
+          {
+            uri: imageResult.IpfsHash,
+            type: imageFile.type,
+          },
+        ],
+      },
     };
 
-    
-    const metadataBuffer = Buffer.from(JSON.stringify(metadata));
-    const metadataResult = await client.add(metadataBuffer);
+    const metadataResult = await pinata.pinJSONToIPFS(metadata, {
+      pinataMetadata: {
+        name: `mood-metadata-${Date.now()}`,
+      },
+    });
 
-    return NextResponse.json({ uri: `https://gateway.pinata.cloud/ipfs/${metadataResult.path}` });
+    return NextResponse.json({
+      metadataUri: `ipfs://${metadataResult.IpfsHash}`,
+      imageUrl: `https://gateway.pinata.cloud/ipfs/${imageResult.IpfsHash}`,
+    });
   } catch (error) {
     console.error('Upload error:', error);
-    return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Internal server error' },
+      { status: 500 }
+    );
   }
 }
