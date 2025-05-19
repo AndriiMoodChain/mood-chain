@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import pinataSDK from '@pinata/sdk';
 import { Readable } from 'stream';
-import { File as NodeFile } from 'node:buffer';
 
 const pinata = new pinataSDK(
   process.env.NEXT_PUBLIC_PINATA_API_KEY!,
@@ -44,11 +43,12 @@ export async function POST(request: Request) {
         cidVersion: 1,
       },
     });
+    console.log(imageResult)
 
     const metadata = {
       name: `Mood NFT - ${mood}`,
       description: description || `Captured mood: ${mood}`,
-      image: `ipfs://${imageResult.IpfsHash}`,
+      image: `https://gateway.pinata.cloud/ipfs/${imageResult.IpfsHash}`,
       attributes: [
         { trait_type: 'Mood', value: mood },
         { trait_type: 'Date', value: createdAt },
@@ -71,7 +71,7 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({
-      metadataUri: `ipfs://${metadataResult.IpfsHash}`,
+      metadataUri: `https://gateway.pinata.cloud/ipfs/${metadataResult.IpfsHash}`,
       imageUrl: `https://gateway.pinata.cloud/ipfs/${imageResult.IpfsHash}`,
     });
   } catch (error) {
