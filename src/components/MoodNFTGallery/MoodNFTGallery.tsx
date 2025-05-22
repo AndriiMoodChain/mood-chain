@@ -29,7 +29,6 @@ export default function MoodNFTGallery({ refreshTrigger }: { refreshTrigger: num
 
         const moodNFTs = allNFTs.filter((nft) => nft.symbol === "MOOD");
         
-        
         const nftsWithMetadata = await Promise.all(
           moodNFTs.map(async (nft) => {
             try {
@@ -53,32 +52,50 @@ export default function MoodNFTGallery({ refreshTrigger }: { refreshTrigger: num
     fetchNFTs();
   }, [wallet.publicKey, refreshTrigger]);
 
-  if (!wallet.connected) return <p>Please connect your wallet to see NFTs.</p>;
-  if (loading) return <p>Loading mood NFTs...</p>;
+  if (!wallet.connected) return (
+    <p className="text-center text-gray-600 p-4">Please connect your wallet to see NFTs.</p>
+  );
+  
+  if (loading) return (
+    <p className="text-center text-gray-600 p-4">Loading mood NFTs...</p>
+  );
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, 200px)", gap: "1rem" }}>
-      {nfts.length === 0 && <p>No MOOD NFTs found.</p>}
-      {nfts.map(({ nft, metadata }) => (
-        <div key={nft.mintAddress.toString()} style={{ border: "1px solid #ccc", padding: "1rem" }}>
-          {metadata?.image ? (
-            <img 
-              src={metadata.image} 
-              alt={metadata.name} 
-              style={{ width: "100%", borderRadius: "10px" }}
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = '/placeholder-image.png';
-              }}
-            />
-          ) : (
-            <div style={{ width: "100%", height: "200px", backgroundColor: "#eee", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              Image not available
+    <div className="w-full px-4 sm:px-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+        {nfts.length === 0 && (
+          <p className="col-span-full text-center text-gray-600 p-4">No MOOD NFTs found.</p>
+        )}
+        {nfts.map(({ nft, metadata }) => (
+          <div 
+            key={nft.mintAddress.toString()} 
+            className="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:scale-105"
+          >
+            {metadata?.image ? (
+              <img 
+                src={metadata.image} 
+                alt={metadata.name} 
+                className="w-full h-48 sm:h-56 object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = '/placeholder-image.png';
+                }}
+              />
+            ) : (
+              <div className="w-full h-48 sm:h-56 bg-gray-100 flex items-center justify-center">
+                <span className="text-gray-400">Image not available</span>
+              </div>
+            )}
+            <div className="p-4">
+              <h4 className="text-lg font-semibold text-gray-800 mb-2 truncate">
+                {metadata?.name || nft.name}
+              </h4>
+              <p className="text-sm text-gray-600">
+                {metadata?.attributes?.find((a) => a.trait_type === "Mood")?.value}
+              </p>
             </div>
-          )}
-          <h4>{metadata?.name || nft.name}</h4>
-          <p>{metadata?.attributes?.find((a) => a.trait_type === "Mood")?.value}</p>
-        </div>
-      ))}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
