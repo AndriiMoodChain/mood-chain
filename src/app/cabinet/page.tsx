@@ -5,6 +5,8 @@ import { MoodType, MoodEntry } from "@/types/mood";
 import styles from "./page.module.css";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { mintMoodNft } from "../scripts/mintMoodNFT";
+import MoodNFTGallery from "@/components/MoodNFTGallery/MoodNFTGallery";
+import MoodAdvice from "@/components/MoodAdvice/MoodAdvice";
 
 export default function CabinetPage() {
   const wallet = useWallet();
@@ -15,6 +17,7 @@ export default function CabinetPage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -40,14 +43,14 @@ export default function CabinetPage() {
     setIsLoading(true);
 
     try {
-      
+
       const formData = new FormData();
       formData.append("file", imageFile);
       formData.append("mood", newMood);
       formData.append("description", newDescription || "");
       formData.append("createdAt", new Date().toISOString());
 
-      
+
       const uploadResponse = await fetch("/api/upload", {
         method: "POST",
         body: formData,
@@ -59,10 +62,10 @@ export default function CabinetPage() {
 
       const { metadataUri } = await uploadResponse.json();
 
-      
+
       const nftAddress = await mintMoodNft(metadataUri, wallet, newMood);
 
-      
+
       const newEntry: MoodEntry = {
         id: nftAddress.toString(),
         date: new Date().toISOString(),
@@ -75,6 +78,7 @@ export default function CabinetPage() {
 
       setMoods([...moods, newEntry]);
       setSingleMood(newEntry);
+      setRefreshKey((prev) => prev + 1);
       resetForm();
 
     } catch (error) {
@@ -159,24 +163,9 @@ export default function CabinetPage() {
         </div>
 
         <div className={styles.card}>
-          <h2 className={styles.subtitle}>Recent Mood</h2>
-          {singleMood ? (
-            <div className={`${styles.moodCard} ${moodColorClass}`}>
-              <div className={styles.moodTitle}>{singleMood.mood.toUpperCase()}</div>
-              <div className={styles.moodDate}>{new Date(singleMood.date).toLocaleDateString()}</div>
-              {singleMood.description && <p className={styles.moodDescription}>{singleMood.description}</p>}
-              {singleMood.nftMinted && <span className={styles.nftTag}>NFT Minted ✅</span>}
-              {singleMood.image && (
-                <img src={singleMood.image} alt="Mood" className={styles.moodCardImage} />
-              )}
-            </div>
-          ) : <p>No mood recorded yet.</p>}
-
-          <div className={styles.analysisSection}>
-            <h3 className={styles.analysisTitle}>Mood Analysis</h3>
-            <p className={styles.analysisText}>You seem to be feeling mostly positive this week. Keep up the good vibes! 🎉</p>
-            <p className={styles.analysisText}>Tip: Try journaling before bed to reflect and unwind.</p>
-          </div>
+          <h2 className={styles.subtitle}>Your Mood NFTs</h2>
+          <MoodNFTGallery refreshTrigger={refreshKey} />
+          <MoodAdvice currentMood={mood} />
         </div>
       </div>
     </main>
