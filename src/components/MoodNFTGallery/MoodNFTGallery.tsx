@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Metaplex } from "@metaplex-foundation/js";
 import { Connection, clusterApiUrl } from "@solana/web3.js";
+import styles from "@/components/MoodNFTGallery/MoodNFTGallery.module.css";
 
 interface NFTMetadata {
   name: string;
@@ -57,45 +58,48 @@ export default function MoodNFTGallery({ refreshTrigger }: { refreshTrigger: num
   );
   
   if (loading) return (
-    <p className="text-center text-gray-600 p-4">Loading mood NFTs...</p>
+    <div className="flex justify-center items-center h-32">
+      <p className="text-gray-600">Loading mood NFTs...</p>
+    </div>
   );
 
   return (
-    <div className="w-full px-4 sm:px-6">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
-        {nfts.length === 0 && (
-          <p className="col-span-full text-center text-gray-600 p-4">No MOOD NFTs found.</p>
-        )}
-        {nfts.map(({ nft, metadata }) => (
-          <div 
-            key={nft.mintAddress.toString()} 
-            className="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:scale-105"
-          >
-            {metadata?.image ? (
-              <img 
-                src={metadata.image} 
-                alt={metadata.name} 
-                className="w-full h-48 sm:h-56 object-cover"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = '/placeholder-image.png';
-                }}
-              />
-            ) : (
-              <div className="w-full h-48 sm:h-56 bg-gray-100 flex items-center justify-center">
-                <span className="text-gray-400">Image not available</span>
-              </div>
-            )}
-            <div className="p-4">
-              <h4 className="text-lg font-semibold text-gray-800 mb-2 truncate">
-                {metadata?.name || nft.name}
-              </h4>
-              <p className="text-sm text-gray-600">
-                {metadata?.attributes?.find((a) => a.trait_type === "Mood")?.value}
-              </p>
+    <div className={styles.nftGrid}>
+      {nfts.length === 0 && (
+        <p className="col-span-full text-center text-gray-600 p-4">No MOOD NFTs found.</p>
+      )}
+      {nfts.map(({ nft, metadata }) => (
+        <div 
+          key={nft.mintAddress.toString()} 
+          className={styles.nftCard}
+        >
+          {metadata?.image ? (
+            <img 
+              src={metadata.image} 
+              alt={metadata.name} 
+              className={styles.nftImage}
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = '/placeholder-image.png';
+              }}
+            />
+          ) : (
+            <div className="w-full h-48 bg-gray-100 flex items-center justify-center">
+              <span className="text-gray-400">Image not available</span>
+            </div>
+          )}
+          <div className={styles.nftInfo}>
+            <h4 className={styles.nftName}>
+              {metadata?.name || nft.name}
+            </h4>
+            <div className={styles.nftMood}>
+              <span>Mood:</span>
+              <span className="font-medium">
+                {metadata?.attributes?.find((a) => a.trait_type === "Mood")?.value || "Unknown"}
+              </span>
             </div>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   );
 }

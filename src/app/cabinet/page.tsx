@@ -6,6 +6,7 @@ import styles from "./page.module.css";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { mintMoodNft } from "../scripts/mintMoodNFT";
 import MoodNFTGallery from "@/components/MoodNFTGallery/MoodNFTGallery";
+import MoodAdvice from "@/components/MoodAdvice/MoodAdvice";
 
 export default function CabinetPage() {
   const wallet = useWallet();
@@ -164,6 +165,7 @@ export default function CabinetPage() {
         <div className={styles.card}>
           <h2 className={styles.subtitle}>Your Mood NFTs</h2>
           <MoodNFTGallery refreshTrigger={refreshKey} />
+          <MoodAdvice currentMood={mood} />
         </div>
       </div>
     </main>
