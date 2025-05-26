@@ -43,13 +43,11 @@ export default function CabinetPage() {
     setIsLoading(true);
 
     try {
-
       const formData = new FormData();
       formData.append("file", imageFile);
       formData.append("mood", newMood);
       formData.append("description", newDescription || "");
       formData.append("createdAt", new Date().toISOString());
-
 
       const uploadResponse = await fetch("/api/upload", {
         method: "POST",
@@ -61,10 +59,7 @@ export default function CabinetPage() {
       }
 
       const { metadataUri } = await uploadResponse.json();
-
-
       const nftAddress = await mintMoodNft(metadataUri, wallet, newMood);
-
 
       const newEntry: MoodEntry = {
         id: nftAddress.toString(),
@@ -80,7 +75,6 @@ export default function CabinetPage() {
       setSingleMood(newEntry);
       setRefreshKey((prev) => prev + 1);
       resetForm();
-
     } catch (error) {
       console.error("Error:", error);
       alert("Operation failed. See console for details.");
@@ -111,36 +105,49 @@ export default function CabinetPage() {
   return (
     <main className={styles.container}>
       <h1 className={styles.title}>Your Mood Diary</h1>
+      
       <div className={styles.grid}>
+        {/* Left Card - Mood Form */}
         <div className={styles.card}>
           <h2 className={styles.subtitle}>How are you feeling today?</h2>
-          <label className={styles.label} htmlFor="mood">Mood:</label>
-          <select
-            id="mood"
-            className={styles.select}
-            value={mood}
-            onChange={(e) => setMood(e.target.value as MoodType)}
-          >
-            <option value="happy">😊 Happy</option>
-            <option value="sad">😢 Sad</option>
-            <option value="angry">😡 Angry</option>
-            <option value="anxious">😰 Anxious</option>
-            <option value="calm">😌 Calm</option>
-            <option value="excited">🤩 Excited</option>
-            <option value="tired">😴 Tired</option>
-          </select>
+          
+          <div className={styles.formGroup}>
+            <label className={styles.label} htmlFor="mood">
+              Mood
+            </label>
+            <select
+              id="mood"
+              className={styles.select}
+              value={mood}
+              onChange={(e) => setMood(e.target.value as MoodType)}
+            >
+              <option value="happy">😊 Happy</option>
+              <option value="sad">😢 Sad</option>
+              <option value="angry">😡 Angry</option>
+              <option value="anxious">😰 Anxious</option>
+              <option value="calm">😌 Calm</option>
+              <option value="excited">🤩 Excited</option>
+              <option value="tired">😴 Tired</option>
+            </select>
+          </div>
 
-          <label className={styles.label} htmlFor="description">Description (optional):</label>
-          <textarea
-            id="description"
-            className={styles.textarea}
-            placeholder="Add a comment"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
+          <div className={styles.formGroup}>
+            <label className={styles.label} htmlFor="description">
+              Description (optional)
+            </label>
+            <textarea
+              id="description"
+              className={styles.textarea}
+              placeholder="Tell us more about how you're feeling..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </div>
 
-          <div className={styles.uploadBlock}>
-            <label htmlFor="image" className={styles.uploadLabel}>Upload Image (optional):</label>
+          <div className={styles.formGroup}>
+            <label htmlFor="image" className={styles.uploadLabel}>
+              Upload Image (required)
+            </label>
             <input
               type="file"
               accept="image/*"
@@ -149,22 +156,35 @@ export default function CabinetPage() {
               className={styles.inputFile}
             />
             {imagePreview && (
-              <img src={imagePreview} alt="Preview" className={styles.previewImage} />
+              <div className={styles.previewContainer}>
+                <img src={imagePreview} alt="Preview" className={styles.previewImage} />
+              </div>
             )}
           </div>
 
           <button
             className={styles.button}
             onClick={() => handleMoodSubmit(mood, description)}
-            disabled={isLoading}
+            disabled={isLoading || !imageFile}
           >
-            {isLoading ? "Minting..." : "Save Mood & Mint"}
+            {isLoading ? (
+              <>
+                <span className={styles.loadingSpinner} />
+                Minting NFT...
+              </>
+            ) : (
+              "Save Mood & Mint NFT"
+            )}
           </button>
         </div>
 
+        {/* Right Card - Gallery and Advice */}
         <div className={styles.card}>
-          <h2 className={styles.subtitle}>Your Mood NFTs</h2>
+          <h2 className={styles.subtitle}>Your Mood Collection</h2>
           <MoodNFTGallery refreshTrigger={refreshKey} />
+          
+          <div className={styles.divider} />
+          
           <MoodAdvice currentMood={mood} />
         </div>
       </div>

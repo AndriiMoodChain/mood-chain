@@ -1,6 +1,7 @@
+
 .container {
     padding: 1rem;
-    max-width: 1000px;
+    max-width: 1200px;
     margin: 0 auto;
     color: #111;
     font-family: "Segoe UI", sans-serif;
@@ -16,212 +17,279 @@
     font-size: 2rem;
     font-weight: bold;
     text-align: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    color: #4f46e5;
 }
 
 @media (min-width: 640px) {
     .title {
         font-size: 2.5rem;
-        margin-bottom: 2rem;
+        margin-bottom: 3rem;
     }
 }
 
 .grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 1.25rem;
+    gap: 2rem;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
     .grid {
         grid-template-columns: 1fr 1fr;
-        gap: 2rem;
+        gap: 3rem;
     }
 }
 
 .card {
     background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    padding: 1rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    padding: 1.5rem;
+    height: fit-content;
 }
 
 @media (min-width: 640px) {
     .card {
-        padding: 1.5rem;
+        padding: 2rem;
     }
 }
 
 .subtitle {
-    font-size: 1.2rem;
-    margin-bottom: 0.75rem;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: #4f46e5;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
-@media (min-width: 640px) {
-    .subtitle {
-        font-size: 1.5rem;
-        margin-bottom: 1rem;
-    }
+.subtitle::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 24px;
+    background-color: #4f46e5;
+    border-radius: 4px;
+}
+
+.formGroup {
+    margin-bottom: 1.5rem;
 }
 
 .label {
     display: block;
-    margin-top: 0.75rem;
     margin-bottom: 0.5rem;
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 1rem;
+    color: #374151;
 }
 
 .select,
 .textarea {
     width: 100%;
-    padding: 0.6rem;
+    padding: 0.8rem;
     font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    margin-bottom: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    background-color: #f9fafb;
+    transition: all 0.2s ease;
+}
+
+.select:focus,
+.textarea:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+}
+
+.textarea {
+    min-height: 120px;
+    resize: vertical;
 }
 
 .button {
     background-color: #4f46e5;
     color: white;
-    padding: 0.7rem 1.2rem;
+    padding: 1rem;
     font-size: 1rem;
     font-weight: 600;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease;
     width: 100%;
     margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
 }
 
 .button:hover {
     background-color: #4338ca;
+    transform: translateY(-1px);
+}
+
+.button:disabled {
+    background-color: #a5b4fc;
+    cursor: not-allowed;
 }
 
 .uploadBlock {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 .uploadLabel {
-    font-size: 0.95rem;
-    font-weight: 500;
+    font-size: 1rem;
+    font-weight: 600;
     margin-bottom: 0.5rem;
     display: block;
+    color: #374151;
 }
 
 .inputFile {
     width: 100%;
-    font-size: 0.875rem; 
-    color: #4b5563; 
+    font-size: 0.875rem;
+    color: #4b5563;
 }
 
 .inputFile::-webkit-file-upload-button {
     margin-right: 1rem;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    border-radius: 9999px;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
     border: none;
-    font-size: 0.875rem; 
-    font-weight: 600; 
-    background-color: #eff6ff; 
-    color: #2563eb; 
+    font-size: 0.875rem;
+    font-weight: 600;
+    background-color: #e0e7ff;
+    color: #4f46e5;
     cursor: pointer;
+    transition: all 0.2s ease;
 }
 
 .inputFile::file-selector-button {
     margin-right: 1rem;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    border-radius: 9999px;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
     border: none;
-    font-size: 0.875rem; 
-    font-weight: 600; 
-    background-color: #eff6ff; 
-    color: #2563eb; 
+    font-size: 0.875rem;
+    font-weight: 600;
+    background-color: #e0e7ff;
+    color: #4f46e5;
     cursor: pointer;
+    transition: all 0.2s ease;
 }
 
 .inputFile::-webkit-file-upload-button:hover {
-    background-color: #dbeafe; 
+    background-color: #c7d2fe;
 }
 
 .inputFile::file-selector-button:hover {
-    background-color: #dbeafe; 
+    background-color: #c7d2fe;
+}
+
+.previewContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 1rem;
+    gap: 1rem;
 }
 
 .previewImage {
-    margin-top: 1rem; 
-    width: 6rem; 
-    height: 6rem; 
-    object-fit: cover; 
-    border-radius: 0.375rem; 
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.05); 
-}
-
-@media (min-width: 640px) {
-    .previewImage {
-        width: 8rem;
-        height: 8rem;
-    }
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
 }
 
 .moodCard {
-    padding: 1rem;
-    border-radius: 8px;
+    padding: 1.5rem;
+    border-radius: 12px;
     color: #111;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .moodTitle {
     font-size: 1.25rem;
     font-weight: bold;
+    margin-bottom: 0.5rem;
 }
 
 .moodDate {
     font-size: 0.9rem;
     opacity: 0.8;
+    margin-bottom: 0.5rem;
 }
 
 .moodDescription {
-    margin-top: 0.5rem;
+    margin-top: 1rem;
+    line-height: 1.6;
 }
 
 .nftTag {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
     background-color: #10b981;
     color: white;
-    padding: 0.25rem 0.75rem;
+    padding: 0.4rem 0.8rem;
     border-radius: 9999px;
     font-size: 0.75rem;
-    margin-top: 0.5rem;
+    margin-top: 0.75rem;
+    font-weight: 600;
 }
 
 .analysisSection {
-    margin-top: 1.5rem;
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background-color: #f8fafc;
+    border-radius: 12px;
 }
 
 .analysisTitle {
     font-size: 1.2rem;
     font-weight: bold;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    color: #4f46e5;
 }
 
 .analysisText {
-    font-size: 0.95rem;
-    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #374151;
 }
 
-.moodHappy { background-color: #f59e0b; }
-.moodSad { background-color: #60a5fa; }
-.moodAngry { background-color: #ef4444; }
-.moodAnxious { background-color: #a78bfa; }
-.moodCalm { background-color: #34d399; }
-.moodExcited { background-color: #f472b6; }
-.moodTired { background-color: #9ca3af; }
-.moodDefault { background-color: #d1d5db; }  
+.moodHappy { background-color: #fef3c7; border-left: 6px solid #f59e0b; }
+.moodSad { background-color: #dbeafe; border-left: 6px solid #60a5fa; }
+.moodAngry { background-color: #fee2e2; border-left: 6px solid #ef4444; }
+.moodAnxious { background-color: #ede9fe; border-left: 6px solid #a78bfa; }
+.moodCalm { background-color: #d1fae5; border-left: 6px solid #34d399; }
+.moodExcited { background-color: #fce7f3; border-left: 6px solid #f472b6; }
+.moodTired { background-color: #f3f4f6; border-left: 6px solid #9ca3af; }
+.moodDefault { background-color: #f3f4f6; border-left: 6px solid #d1d5db; }
+
+.loadingSpinner {
+    animation: spin 1s linear infinite;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.divider {
+    height: 1px;
+    background-color: #e5e7eb;
+    margin: 1.5rem 0;
+}
