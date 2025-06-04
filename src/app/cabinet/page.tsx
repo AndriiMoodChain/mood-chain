@@ -69,14 +69,14 @@ export default function CabinetPage() {
     tired: styles.moodTired,
   };
 
-  const moodColorClass = singleMood ? moodColors[singleMood.mood] || styles.moodDefault : styles.moodDefault;
+  //const moodColorClass = singleMood ? moodColors[singleMood.mood] || styles.moodDefault : styles.moodDefault;
 
   return (
     <main className={styles.container}>
       <h1 className={styles.title}>Your Mood Diary</h1>
       
       <div className={styles.grid}>
-        {/* Left Card - Mood Form Trigger */}
+       
         <div className={styles.card}>
           <h2 className={styles.subtitle}>Track Your Mood</h2>
           
@@ -97,7 +97,7 @@ export default function CabinetPage() {
           <MoodAdvice currentMood={singleMood?.mood || "happy"} />
         </div>
 
-        {/* Right Card - Gallery and Advice */}
+       
         <div className={styles.card}>
           <h2 className={styles.subtitle}>Your Mood Collection</h2>
           <MoodNFTGallery refreshTrigger={refreshKey} />

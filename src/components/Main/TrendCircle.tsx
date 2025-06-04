@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 
 const trends = [
@@ -10,14 +10,12 @@ const trends = [
 ];
 
 export const TrendCircle = () => {
-  const [scrollX, setScrollX] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
       if (containerRef.current) {
         containerRef.current.scrollLeft += 1;
-        setScrollX(containerRef.current.scrollLeft);
         if (containerRef.current.scrollLeft > containerRef.current.scrollWidth - containerRef.current.clientWidth) {
           containerRef.current.scrollLeft = 0;
         }

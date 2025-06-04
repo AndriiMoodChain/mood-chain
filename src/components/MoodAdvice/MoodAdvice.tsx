@@ -49,16 +49,23 @@ const moodAdvice: Record<string, string[]> = {
 export default function MoodAdvice({ currentMood }: { currentMood: string }) {
   const [advice, setAdvice] = useState("");
 
-  const getRandomAdvice = () => {
+  useEffect(() => {
+    const getRandomAdvice = () => {
+      const moodKey = currentMood in moodAdvice ? currentMood : "default";
+      const possibleAdvice = moodAdvice[moodKey];
+      const randomIndex = Math.floor(Math.random() * possibleAdvice.length);
+      setAdvice(possibleAdvice[randomIndex]);
+    };
+
+    getRandomAdvice();
+  }, [currentMood]);
+
+  const getAnotherAdvice = () => {
     const moodKey = currentMood in moodAdvice ? currentMood : "default";
     const possibleAdvice = moodAdvice[moodKey];
     const randomIndex = Math.floor(Math.random() * possibleAdvice.length);
     setAdvice(possibleAdvice[randomIndex]);
   };
-
-  useEffect(() => {
-    getRandomAdvice();
-  }, [currentMood]);
 
   return (
     <div className={styles.adviceCard}>
@@ -66,7 +73,7 @@ export default function MoodAdvice({ currentMood }: { currentMood: string }) {
       <p className={styles.adviceText}>{advice}</p>
       <button 
         className={styles.adviceButton} 
-        onClick={getRandomAdvice}
+        onClick={getAnotherAdvice}
       >
         Get Another Advice
       </button>

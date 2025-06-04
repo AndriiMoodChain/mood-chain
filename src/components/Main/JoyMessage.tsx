@@ -20,7 +20,7 @@ export const JoyMessage = () => {
 
       <p className={styles.paragraph}>
         <strong>Why it matters:</strong><br />
-        Most mental health apps feel cold and clinical. MoodChain is different — it's built for self-reflection, connection, and celebration.
+        Most mental health apps feel cold and clinical. MoodChain is different — its built for self-reflection, connection, and celebration.
       </p>
 
       <p className={styles.paragraph}>
