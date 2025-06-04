@@ -70,10 +70,12 @@ export async function POST(request: Request) {
       },
     });
 
-    return NextResponse.json({
+    const responseData = {
       metadataUri: `https://gateway.pinata.cloud/ipfs/${metadataResult.IpfsHash}`,
-      imageUrl: `https://gateway.pinata.cloud/ipfs/${imageResult.IpfsHash}`,
-    });
+      imageUrl: `https://gateway.pinata.cloud/ipfs/${imageResult.IpfsHash}`,      
+    };
+
+    return NextResponse.json(responseData);
   } catch (error) {
     console.error('Upload error:', error);
     return NextResponse.json(
