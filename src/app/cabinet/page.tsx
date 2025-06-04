@@ -7,40 +7,20 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { mintMoodNft } from "../scripts/mintMoodNFT";
 import MoodNFTGallery from "@/components/MoodNFTGallery/MoodNFTGallery";
 import MoodAdvice from "@/components/MoodAdvice/MoodAdvice";
+import MoodForm from "@/components/MoodForm/MoodForm";
 
 export default function CabinetPage() {
   const wallet = useWallet();
-  const [mood, setMood] = useState<MoodType>("happy");
-  const [description, setDescription] = useState("");
   const [moods, setMoods] = useState<MoodEntry[]>([]);
   const [singleMood, setSingleMood] = useState<MoodEntry | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [showMoodForm, setShowMoodForm] = useState(false);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setImagePreview(null);
-      setImageFile(null);
-    }
-  };
-
-  const handleMoodSubmit = async (newMood: MoodType, newDescription?: string) => {
+  const handleMoodSubmit = async (newMood: MoodType, newDescription?: string, imageFile?: File) => {
     if (!wallet.connected || !wallet.publicKey || !imageFile) {
       alert("Please connect wallet and select an image.");
       return;
     }
-
-    setIsLoading(true);
 
     try {
       const formData = new FormData();
@@ -67,27 +47,16 @@ export default function CabinetPage() {
         mood: newMood,
         description: newDescription,
         nftMinted: true,
-        image: imagePreview || undefined,
         nftAddress: nftAddress.toString(),
       };
 
       setMoods([...moods, newEntry]);
       setSingleMood(newEntry);
       setRefreshKey((prev) => prev + 1);
-      resetForm();
     } catch (error) {
       console.error("Error:", error);
       alert("Operation failed. See console for details.");
-    } finally {
-      setIsLoading(false);
     }
-  };
-
-  const resetForm = () => {
-    setMood("happy");
-    setDescription("");
-    setImagePreview(null);
-    setImageFile(null);
   };
 
   const moodColors: { [key in MoodType]: string } = {
@@ -107,75 +76,25 @@ export default function CabinetPage() {
       <h1 className={styles.title}>Your Mood Diary</h1>
       
       <div className={styles.grid}>
-        {/* Left Card - Mood Form */}
+        {/* Left Card - Mood Form Trigger */}
         <div className={styles.card}>
-          <h2 className={styles.subtitle}>How are you feeling today?</h2>
+          <h2 className={styles.subtitle}>Track Your Mood</h2>
           
-          <div className={styles.formGroup}>
-            <label className={styles.label} htmlFor="mood">
-              Mood
-            </label>
-            <select
-              id="mood"
-              className={styles.select}
-              value={mood}
-              onChange={(e) => setMood(e.target.value as MoodType)}
-            >
-              <option value="happy">😊 Happy</option>
-              <option value="sad">😢 Sad</option>
-              <option value="angry">😡 Angry</option>
-              <option value="anxious">😰 Anxious</option>
-              <option value="calm">😌 Calm</option>
-              <option value="excited">🤩 Excited</option>
-              <option value="tired">😴 Tired</option>
-            </select>
-          </div>
-
-          <div className={styles.formGroup}>
-            <label className={styles.label} htmlFor="description">
-              Description (optional)
-            </label>
-            <textarea
-              id="description"
-              className={styles.textarea}
-              placeholder="Tell us more about how you're feeling..."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-          </div>
-
-          <div className={styles.formGroup}>
-            <label htmlFor="image" className={styles.uploadLabel}>
-              Upload Image (required)
-            </label>
-            <input
-              type="file"
-              accept="image/*"
-              id="image"
-              onChange={handleImageChange}
-              className={styles.inputFile}
-            />
-            {imagePreview && (
-              <div className={styles.previewContainer}>
-                <img src={imagePreview} alt="Preview" className={styles.previewImage} />
-              </div>
-            )}
-          </div>
-
           <button
             className={styles.button}
-            onClick={() => handleMoodSubmit(mood, description)}
-            disabled={isLoading || !imageFile}
+            onClick={() => setShowMoodForm(true)}
+            disabled={!wallet.connected}
           >
-            {isLoading ? (
-              <>
-                <span className={styles.loadingSpinner} />
-                Minting NFT...
-              </>
-            ) : (
-              "Save Mood & Mint NFT"
-            )}
+            Claim Mood Today
           </button>
+
+          {showMoodForm && (
+            <MoodForm
+              onSubmit={(mood, description, imageFile) => handleMoodSubmit(mood, description, imageFile)}
+              onClose={() => setShowMoodForm(false)}
+            />
+          )}
+          <MoodAdvice currentMood={singleMood?.mood || "happy"} />
         </div>
 
         {/* Right Card - Gallery and Advice */}
@@ -185,7 +104,7 @@ export default function CabinetPage() {
           
           <div className={styles.divider} />
           
-          <MoodAdvice currentMood={mood} />
+          
         </div>
       </div>
     </main>
