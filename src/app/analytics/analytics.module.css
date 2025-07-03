@@ -180,4 +180,32 @@
 
 .recommendationItem {
   border-left: 4px solid #10b981;
+}
+
+.globalTrendsBlock {
+  margin-top: 1rem;
+  background: #f1f5f9;
+  border-radius: 10px;
+  padding: 1.25rem 1rem;
+  color: #374151;
+}
+
+.globalTrendsBlock p {
+  margin-bottom: 0.5rem;
+}
+
+.globalInsights {
+  margin-top: 1rem;
+}
+
+.globalInsights ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  list-style: disc;
+  color: #64748b;
+}
+
+.globalInsights li {
+  margin-bottom: 0.5rem;
+  font-size: 0.97rem;
 } 

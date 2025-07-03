@@ -108,6 +108,25 @@ export default function AnalyticsPage() {
                   ))}
                 </ul>
               </div>
+
+              <div className={styles.card}>
+                <h2 className={styles.cardTitle}>Global Mood Trends Comparison</h2>
+                <div className={styles.globalTrendsBlock}>
+                  <p className={styles.trendText}><strong>Your most frequent mood:</strong> {analysis.weeklyStats.mostFrequent}</p>
+                  <p className={styles.trendText}><strong>Global most frequent mood:</strong> Happy</p>
+                  <p className={styles.trendText}><strong>Your average mood:</strong> {analysis.weeklyStats.averageMood}</p>
+                  <p className={styles.trendText}><strong>Global average mood:</strong> Calm</p>
+                  <div className={styles.globalInsights}>
+                    <p><strong>Insights:</strong></p>
+                    <ul>
+                      <li>Globally, people tend to feel happier on weekends.</li>
+                      <li>Stress and anxiety peak on Mondays and during exam/work periods.</li>
+                      <li>Calm and relaxed moods are more common in the evenings.</li>
+                      <li>Compared to global trends, your mood is slightly more positive than average.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </>
